@@ -1,5 +1,6 @@
 using BOL;
 using DAL;
+using DAL.UnitsOfWork.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,10 @@ builder.Services.AddDbContext<LLDBContext>(
 //configuring identity
 builder.Services.AddIdentity<LLUser, IdentityRole>()
                 .AddEntityFrameworkStores<LLDBContext>()
-                .AddDefaultTokenProviders();
+.AddDefaultTokenProviders();
+
+
+builder.Services.AddTransient<ILLDB, LLDB>();
 
 //step 3 validating Token
 //Step-3.1: Create signingKey from Secretkey
