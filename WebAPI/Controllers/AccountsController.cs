@@ -98,12 +98,12 @@ namespace WebAPI.Controllers
 
         [HttpPost("register"), DisableRequestSizeLimit]
 
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             try
             {
 
-                RegisterViewModel model = JsonConvert.DeserializeObject<RegisterViewModel>(Request.Form["myModel"].ToString());
+               // RegisterViewModel model = JsonConvert.DeserializeObject<RegisterViewModel>(Request.Form["myModel"].ToString());
 
                 if (ModelState.IsValid)
                 {
@@ -121,16 +121,16 @@ namespace WebAPI.Controllers
 
                         if (roleResult.Succeeded)
                         {
-                            if (Request.Form.Files.Count > 0)
-                            {
-                                var filePath = Path.GetFullPath("~/ProfilePics/" + user.Id + ".jpeg").Replace("~\\", "");
+                            //if (Request.Form.Files.Count > 0)
+                            //{
+                            //    var filePath = Path.GetFullPath("~/ProfilePics/" + user.Id + ".jpeg").Replace("~\\", "");
 
-                                using (var stream = new FileStream(filePath, FileMode.Create))
-                                {
-                                    Request.Form.Files[0].CopyTo(stream);
+                            //    using (var stream = new FileStream(filePath, FileMode.Create))
+                            //    {
+                            //        Request.Form.Files[0].CopyTo(stream);
 
-                                }
-                            }
+                            //    }
+                            //}
                             return Ok(user);
 
                         }

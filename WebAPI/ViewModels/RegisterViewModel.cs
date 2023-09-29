@@ -17,8 +17,7 @@ namespace WebAPI.ViewModels
         [Compare("Password")]
         public string? ConfirmPassword { get; set; }
 
-        [Required]
-        public DateTime DOB { get; set; }
+        
 
         public string? ProfilePicUrl { get; set; }
 
