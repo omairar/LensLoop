@@ -22,6 +22,10 @@ builder.Services.AddIdentity<LLUser, IdentityRole>()
 .AddDefaultTokenProviders();
 
 
+//add Swagger
+builder.Services.AddSwaggerDocument();
+
+
 builder.Services.AddTransient<ILLDB, LLDB>();
 
 //step 3 validating Token
@@ -97,5 +101,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
+//enable swagger
+app.UseOpenApi(); // add
+app.UseSwaggerUi3(); // add
 
 app.Run();
