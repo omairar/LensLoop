@@ -13,7 +13,7 @@ namespace DAL
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    base.OnConfiguring(optionsBuilder);
-        //    optionsBuilder.UseSqlServer(@"Server=DESKTOP-MSQQ9TJ\SQLEXPRESS01;Database=LLDb;Trusted_Connection=True;");
+        //    optionsBuilder.UseSqlServer(@"Server=DESKTOP-MSQQ9TJ\SQLEXPRESS01;Database=LLDB;Trusted_Connection=True;");
         //}
 
         public DbSet<Post>? Posts { get; set; }

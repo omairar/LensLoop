@@ -86,7 +86,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-app.MapGet("/", () => "Hello World!");
 
 
 //enable settings for cors
