@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(LLDBContext))]
-    [Migration("20230929180415_firstsetup")]
-    partial class firstsetup
+    [Migration("20230930064140_firstMigration")]
+    partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,24 @@ namespace DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("BOL.Follow", b =>
+                {
+                    b.Property<string>("FollowerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FolloweeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("FollowDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("FollowerId", "FolloweeId");
+
+                    b.HasIndex("FolloweeId");
+
+                    b.ToTable("Follow");
+                });
 
             modelBuilder.Entity("BOL.Post", b =>
                 {
@@ -249,13 +267,26 @@ namespace DAL.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<int?>("follower")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("following")
-                        .HasColumnType("int");
-
                     b.ToTable("LLUser");
+                });
+
+            modelBuilder.Entity("BOL.Follow", b =>
+                {
+                    b.HasOne("BOL.LLUser", "Follower")
+                        .WithMany("Followee")
+                        .HasForeignKey("FolloweeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BOL.LLUser", "Followee")
+                        .WithMany("Follower")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Followee");
+
+                    b.Navigation("Follower");
                 });
 
             modelBuilder.Entity("BOL.Post", b =>
@@ -331,6 +362,10 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("BOL.LLUser", b =>
                 {
+                    b.Navigation("Followee");
+
+                    b.Navigation("Follower");
+
                     b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618

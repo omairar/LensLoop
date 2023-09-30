@@ -20,5 +20,7 @@ namespace BOL
         public string Id { get; set; }
         public LLUser UserNav { get; set; }
 
+        public IEnumerable<Comment>? Comments { get; set; }
+
     }
 }

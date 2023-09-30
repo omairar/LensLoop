@@ -22,6 +22,52 @@ namespace DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("BOL.Comment", b =>
+                {
+                    b.Property<int>("Cid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Cid"), 1L, 1);
+
+                    b.Property<string>("Cmt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Pid")
+                        .HasColumnType("int");
+
+                    b.HasKey("Cid");
+
+                    b.HasIndex("Id");
+
+                    b.HasIndex("Pid");
+
+                    b.ToTable("Comment");
+                });
+
+            modelBuilder.Entity("BOL.Follow", b =>
+                {
+                    b.Property<string>("FollowerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FolloweeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("FollowDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("FollowerId", "FolloweeId");
+
+                    b.HasIndex("FolloweeId");
+
+                    b.ToTable("Follow");
+                });
+
             modelBuilder.Entity("BOL.Post", b =>
                 {
                     b.Property<int>("Pid")
@@ -247,13 +293,45 @@ namespace DAL.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<int?>("follower")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("following")
-                        .HasColumnType("int");
-
                     b.ToTable("LLUser");
+                });
+
+            modelBuilder.Entity("BOL.Comment", b =>
+                {
+                    b.HasOne("BOL.LLUser", "UserNav")
+                        .WithMany("Comments")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BOL.Post", "PostNav")
+                        .WithMany("Comments")
+                        .HasForeignKey("Pid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PostNav");
+
+                    b.Navigation("UserNav");
+                });
+
+            modelBuilder.Entity("BOL.Follow", b =>
+                {
+                    b.HasOne("BOL.LLUser", "Follower")
+                        .WithMany("Followee")
+                        .HasForeignKey("FolloweeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BOL.LLUser", "Followee")
+                        .WithMany("Follower")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Followee");
+
+                    b.Navigation("Follower");
                 });
 
             modelBuilder.Entity("BOL.Post", b =>
@@ -327,8 +405,19 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BOL.Post", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("BOL.LLUser", b =>
                 {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Followee");
+
+                    b.Navigation("Follower");
+
                     b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
