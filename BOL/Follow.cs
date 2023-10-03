@@ -15,6 +15,8 @@ namespace BOL
 
         public string FollowerId { get; set; }
         public string FolloweeId { get; set; }
+
+
         public LLUser Follower { get; set; }
         public LLUser Followee { get; set; }
 

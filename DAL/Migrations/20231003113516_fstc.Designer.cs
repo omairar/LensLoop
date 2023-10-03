@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(LLDBContext))]
-    [Migration("20230930064140_firstMigration")]
-    partial class firstMigration
+    [Migration("20231003113516_fstc")]
+    partial class fstc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,34 @@ namespace DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("BOL.Comment", b =>
+                {
+                    b.Property<int>("cmt_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("cmt_id"), 1L, 1);
+
+                    b.Property<string>("captions")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("comment_user_id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("post_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("cmt_id");
+
+                    b.HasIndex("comment_user_id");
+
+                    b.HasIndex("post_id");
+
+                    b.ToTable("Comment");
+                });
 
             modelBuilder.Entity("BOL.Follow", b =>
                 {
@@ -270,16 +298,35 @@ namespace DAL.Migrations
                     b.ToTable("LLUser");
                 });
 
+            modelBuilder.Entity("BOL.Comment", b =>
+                {
+                    b.HasOne("BOL.LLUser", "UserNav")
+                        .WithMany("Comments")
+                        .HasForeignKey("comment_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BOL.Post", "PostNav")
+                        .WithMany("Comments")
+                        .HasForeignKey("post_id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("PostNav");
+
+                    b.Navigation("UserNav");
+                });
+
             modelBuilder.Entity("BOL.Follow", b =>
                 {
                     b.HasOne("BOL.LLUser", "Follower")
-                        .WithMany("Followee")
+                        .WithMany("Followees")
                         .HasForeignKey("FolloweeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BOL.LLUser", "Followee")
-                        .WithMany("Follower")
+                        .WithMany("Followers")
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -360,11 +407,18 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BOL.Post", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("BOL.LLUser", b =>
                 {
-                    b.Navigation("Followee");
+                    b.Navigation("Comments");
 
-                    b.Navigation("Follower");
+                    b.Navigation("Followees");
+
+                    b.Navigation("Followers");
 
                     b.Navigation("Posts");
                 });

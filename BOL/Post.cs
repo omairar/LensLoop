@@ -17,7 +17,7 @@ namespace BOL
 
         
         [ForeignKey("UserNav")]
-        public string Id { get; set; }
+        public string user_id { get; set; }
         public LLUser UserNav { get; set; }
 
         public IEnumerable<Comment>? Comments { get; set; }

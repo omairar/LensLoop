@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class firstMigration : Migration
+    public partial class fstc : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -215,6 +215,33 @@ namespace DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Comment",
+                columns: table => new
+                {
+                    cmt_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    captions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    comment_user_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    post_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comment", x => x.cmt_id);
+                    table.ForeignKey(
+                        name: "FK_Comment_LLUser_comment_user_id",
+                        column: x => x.comment_user_id,
+                        principalTable: "LLUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comment_Post_post_id",
+                        column: x => x.post_id,
+                        principalTable: "Post",
+                        principalColumn: "Pid",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -255,6 +282,16 @@ namespace DAL.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comment_comment_user_id",
+                table: "Comment",
+                column: "comment_user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comment_post_id",
+                table: "Comment",
+                column: "post_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Follow_FolloweeId",
                 table: "Follow",
                 column: "FolloweeId");
@@ -283,13 +320,16 @@ namespace DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Comment");
+
+            migrationBuilder.DropTable(
                 name: "Follow");
 
             migrationBuilder.DropTable(
-                name: "Post");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Post");
 
             migrationBuilder.DropTable(
                 name: "LLUser");
